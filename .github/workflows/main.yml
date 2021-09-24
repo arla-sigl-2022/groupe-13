@@ -29,7 +29,7 @@ jobs:
       - name: build and publish docker image 
         run: | 
           docker build -t docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }} .
-          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }}
 
       - name: Deploy on production VM
@@ -43,7 +43,7 @@ jobs:
           envs: TAG
           scripts: |
             echo "image tag to be release: $TAG"
-            docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:$TAG
             (docker stop garlaxy && docker rm garlaxy) || echo "Nothing to stop"
             docker run -d --name garlaxy --network web --label traefik.enable=true --label traefik.docker.network=web --label traefik.frontend.rule=Host:groupe13.arla-sigl.fr --label traefik.frontend.port=80 docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:$TAG
