@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           envs: TAG
-          scripts: |
+          script: |
             echo "image tag to be release: $TAG"
             docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
             docker pull docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:$TAG
