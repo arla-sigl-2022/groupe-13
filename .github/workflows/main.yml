@@ -26,11 +26,26 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: build and publish docker image 
+        run: | 
+          docker build -t docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }}
+          docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker push docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }}
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - name: Deploy on production VM
+        uses: appleboy/ssh-action@master
+        env:
+          TAG: ${{ github.sha }}
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          envs: TAG
+          scripts: |
+            echo "image tag to be release: $TAG"
+            docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
+            docker pull docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:$TAG
+            (docker stop garlaxy && docker rm garlaxy) || echo "Nothing to stop"
+            docker run -d --name garlaxy --network web --label traefik.enable=true --label traefik.docker.network=web --label traefik.frontend.rule=Host:groupe13.arla-sigl.fr --label traefik.frontend.port=80 docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:$TAG
+ 
+          
