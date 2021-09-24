@@ -28,7 +28,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: build and publish docker image 
         run: | 
-          docker build -t docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }}
+          docker build -t docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }} .
           docker login -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker push docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }}
 
