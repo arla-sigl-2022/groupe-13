@@ -65,7 +65,7 @@ body {
   /*
    Small trick to have gradient colors on border
   */
-  border: 10px solid;
+  border-style: solid;
   border-image-slice: 1;
   border-width: 5px;
   border-image-source: linear-gradient(
