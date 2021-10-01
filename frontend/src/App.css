@@ -1,38 +1,131 @@
-.App {
+html,
+body {
+  height: 100%; /* makes sure we take all height by default.*/
+  background-image: url("garlaxy.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  overflow: hidden;
+}
+
+.header,
+.footer {
+  display: flex; /* FlexBoxes are amazing CSS tools for responsiveness. Check it out! */
+  margin-left: 10vw;
+  margin-right: 10vw;
+  color: whitesmoke;
   text-align: center;
+  height: 10vh; /* 10% of the viewport height*/
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.content {
+  height: 80vh; /* 80% of the viewport height*/
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.sidemenu {
+  display: inherit;
+  overflow-y: auto;
+  margin-left: 2rem;
+  max-width: 150px;
+  height: 100%;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* Only shown on small screen */
+.sidemenu-horizontal {
+  display: none;
+}
+
+.main {
+  overflow: auto;
+  margin-right: 2rem;
+  flex-grow: 1;
+}
+
+.ressources, .panier, .commandes {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  overflow-y: auto;
+  height: 70vh;
 }
 
-.App-link {
-  color: #61dafb;
+.ressources thead {
+  background-color: rgba(255, 173, 72, 1);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.garlaxy-block {
+  background-color: white;
+  /* 
+        we have to add box-sizing to have border inside the div not outside.
+        Otherwise it breaks grid layout of pure
+    */
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+
+  /*
+   Small trick to have gradient colors on border
+  */
+  border: 10px solid;
+  border-image-slice: 1;
+  border-width: 5px;
+  border-image-source: linear-gradient(
+    0.25turn,
+    rgba(153, 0, 254, 1),
+    rgba(255, 173, 72, 1),
+    rgba(153, 0, 254, 1)
+  );
+
+  background-color: #1e1e1e;
+  color: whitesmoke;
+}
+
+.text-centered {
+  flex-grow: 1;
+  align-self: center;
+}
+
+.garlaxy-title {
+  font-size: 3rem;
+  font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
+}
+
+.button-primary {
+  background: rgb(153, 0, 254, 0.8);
+  color: whitesmoke;
+}
+
+.footer a {
+  color: whitesmoke;
+}
+
+/* RESPONSIVE PROPERTIES */
+@media screen and (max-width: 768px) {
+  /* Just show the horizontal menu element instead of the vertical one */
+  .sidemenu-horizontal {
+    display: inherit;
+    overflow-x: auto;
   }
-  to {
-    transform: rotate(360deg);
+  .sidemenu {
+    display: none;
+  }
+  /* Remove margin between boxes*/
+  .main {
+    margin: 0;
+  }
+  /* 
+    Remove the bg image and put black color instead.
+    We could also load a smaller image.
+  */
+  body {
+    height: 100%; /* makes sure we take all height by default.*/
+    background: black;
+  }
+
+  /* 
+   Scales down table to adapt to small screen (avoid shrinking,
+   or horizontal scroll
+  */
+  table {
+    font-size: 12px;
   }
 }
