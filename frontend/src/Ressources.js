@@ -1,6 +1,10 @@
 import React from "react";
+import { GarlaxyContext } from "./GarlaxyContext";
 
 export function Ressources() {
+  const { state, dispatch } = React.useContext(GarlaxyContext);
+  const resourceList = state ? state.ressources : [];
+
   return (
     <div className="ressources">
       <h1>Ressources</h1>
@@ -14,22 +18,25 @@ export function Ressources() {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Sarlax</td>
-            <td>Arlium</td>
-            <td>3,25</td>
-            <td>
-              <button className="pure-button button-primary">Acheter</button>
-            </td>
-          </tr>
-          <tr>
-            <td>Sarlax</td>
-            <td>Arlium</td>
-            <td>3,25</td>
-            <td>
-              <button className="pure-button button-primary">Acheter</button>
-            </td>
-          </tr>
+          {resourceList.map(function (item, idx) {
+            return (
+              <tr key={idx}>
+                <td>{item.planete}</td>
+                <td>{item.ressource}</td>
+                <td>{item.prix}</td>
+                <td>
+                  <button
+                    className="pure-button button-primary"
+                    onClick={function () {
+                      dispatch({ type: "AJOUT_ITEM_AU_PANIER", item: item });
+                    }}
+                  >
+                    Acheter
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
