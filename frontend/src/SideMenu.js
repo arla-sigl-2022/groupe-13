@@ -1,7 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { GarlaxyContext } from "./GarlaxyContext";
 
 function SideMenuBase(props) {
+  const {state} = React.useContext(GarlaxyContext);
+  const numberOfItemInPanier = (state ? state.panier : []).length;
   const horizontalSuffix = props.smallScreen ? "-horizontal" : "";
   return (
     <div className={`garlaxy-block sidemenu${horizontalSuffix}`}>
@@ -14,7 +17,7 @@ function SideMenuBase(props) {
           </li>
           <li className="pure-menu-item">
             <Link className="pure-menu-link" to="/panier">
-              Panier
+              Panier <span className="badge">{numberOfItemInPanier}</span>
             </Link>
           </li>
           <li className="pure-menu-item">
