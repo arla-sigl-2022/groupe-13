@@ -1,11 +1,7 @@
 import React from "react";
 
 export const initialState = {
-  ressources: [
-    { id: 1, planete: "Marlax", ressource: "Arlaminium", prix: 0.73 },
-    { id: 2, planete: "Sarlax", ressource: "Arlium", prix: 3.25 },
-    { id: 3, planete: "Larlune", ressource: "Rarladium", prix: 1.42 },
-  ],
+  ressources: [],
   panier: [],
 };
 
@@ -26,6 +22,11 @@ export function reducer(state, action) {
           return item.id !== action.item.id;
         }),
       };
+    case "RESSOURCES_ARRIVEES":
+      return {
+        ...state,
+        ressources: action.ressources
+      }
     default:
       return state;
   }
