@@ -12,7 +12,7 @@ export function Content() {
   React.useEffect(() => {
     async function getResources() {
       const apiResponse = await fetch(
-        "http://localhost:3030/v1/resource?page=1&limit=10"
+        "https://api.groupe13.arla-sigl.fr/v1/resource?page=1&limit=10"
       );
       const resourcesDocument = await apiResponse.json();
       dispatch({
