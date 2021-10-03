@@ -4,8 +4,25 @@ import { Ressources } from "./Ressources";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { Panier } from "./Panier";
 import { Commandes } from "./Commandes";
+import { GarlaxyContext } from "./GarlaxyContext";
 
 export function Content() {
+  const { dispatch } = React.useContext(GarlaxyContext);
+
+  React.useEffect(() => {
+    async function getResources() {
+      const apiResponse = await fetch(
+        "http://localhost:3030/v1/resource?page=1&limit=10"
+      );
+      const resourcesDocument = await apiResponse.json();
+      dispatch({
+        type: "RESSOURCES_ARRIVEES",
+        ressources: resourcesDocument.resources,
+      });
+    }
+    getResources();
+  }, [dispatch]);
+
   return (
     <Router>
       <div className="content">
