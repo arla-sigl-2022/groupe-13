@@ -14,6 +14,7 @@ function App() {
       clientId="KB3fxuCbW3T08YzcMYh0kSCFCr8dGLY9"
       domain="garlaxy-groupe-13.eu.auth0.com"
       redirectUri={window.location.origin}
+      audience="https://api.groupe13.arla-sigl.fr"
       cacheLocation="localstorage"
     >
       <Authenticated>
