@@ -15,7 +15,7 @@ export function Content() {
     async function getResources() {
       const token = await getAccessTokenSilently();
       const apiResponse = await fetch(
-        "https://api.groupe13.arla-sigl.fr/v1/resource?page=1&limit=10",
+        `${process.env.REACT_APP_API_HOST}/v1/resource?page=1&limit=10`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const resourcesDocument = await apiResponse.json();
