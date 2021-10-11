@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { DB } = require("./database");
+const { RDB } = require("./database");
 const { extractPageOptions } = require("./utils");
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
@@ -28,9 +28,9 @@ app.use(jwtCheck);
 // We use cors and allow all origins (default)
 app.use(cors());
 
-app.get("/v1/resource", (req, res) => {
+app.get("/v1/resource", async (req, res) => {
   const { page, limit } = extractPageOptions(req.query);
-  const resourceList = DB.getResourcePage(page, limit);
+  const resourceList = await RDB.getResourcePage(page, limit);
   res.send({ resources: resourceList });
 });
 

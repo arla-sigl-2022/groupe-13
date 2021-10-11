@@ -52,6 +52,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: setup .env with github secrets for database
+        working-directory: backend
+        run: |
+          cat <<EOF > .env
+            RDB_HOST=${{ secrets.RDB_HOST }}
+            RDB_PORT=${{ secrets.RDB_PORT }}
+            RDB_DATABASE=${{ secrets.RDB_DATABASE }}
+            RDB_USER=${{ secrets.RDB_USER }}
+            RDB_PASSWORD=${{ secrets.RDB_PASSWORD }}
+          EOF
       - name: build and publish backend docker image
         working-directory: backend
         run: |
