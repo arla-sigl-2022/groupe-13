@@ -108,6 +108,17 @@ body {
   border-radius:50%;
 }
 
+.profile {
+  display: flex;
+  align-items: center;
+}
+
+.logout {
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 1rem;
+}
+
 /* RESPONSIVE PROPERTIES */
 @media screen and (max-width: 768px) {
   /* Just show the horizontal menu element instead of the vertical one */
@@ -121,6 +132,10 @@ body {
   /* Remove margin between boxes*/
   .main {
     margin: 0;
+  }
+  .header {
+    flex-direction: column;
+    height: auto;
   }
   /* 
     Remove the bg image and put black color instead.
