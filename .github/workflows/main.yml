@@ -61,6 +61,11 @@ jobs:
             RDB_DATABASE=${{ secrets.RDB_DATABASE }}
             RDB_USER=${{ secrets.RDB_USER }}
             RDB_PASSWORD=${{ secrets.RDB_PASSWORD }}
+            DDB_HOST=${{ secrets.DDB_HOST }}
+            DDB_PORT=${{ secrets.DDB_PORT }}
+            DDB_USER=${{ secrets.DDB_USER }}
+            DDB_PASSWORD=${{ secrets.DDB_PASSWORD }}
+            DDB_AUTH_SOURCE=${{ secrets.DDB_AUTH_SOURCE }}
           EOF
       - name: build and publish backend docker image
         working-directory: backend

@@ -6,6 +6,7 @@ import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import { Panier } from "./Panier";
 import { Commandes } from "./Commandes";
 import { GarlaxyContext } from "./GarlaxyContext";
+import { Contractors } from "./Contractors";
 
 export function Content() {
   const { dispatch } = React.useContext(GarlaxyContext);
@@ -25,7 +26,7 @@ export function Content() {
       });
     }
     getResources();
-  }, [dispatch]);
+  }, [dispatch, getAccessTokenSilently]);
 
   return (
     <Router>
@@ -43,6 +44,9 @@ export function Content() {
                 </Route>
                 <Route path="/commandes">
                   <Commandes></Commandes>
+                </Route>
+                <Route path="/contractors">
+                  <Contractors></Contractors>
                 </Route>
                 <Route path="/">
                   <Ressources></Ressources>

@@ -1,5 +1,6 @@
 const process = require("process");
-const {Pool } = require("pg");
+const { Pool } = require("pg");
+const { MongoClient } = require("mongodb");
 const dotenv = require("dotenv");
 
 // Loads the env variables for localhost
@@ -26,6 +27,13 @@ var RDB = {
     return result.rows;
   },
 
+  getContractors: async function () {
+    const rows = await this.queryMany(`
+      SELECT * FROM contractor;
+    `)
+    return rows;
+  },
+
   /**
    * Reads a page of resources, based on the resources array above.
    *
@@ -37,11 +45,67 @@ var RDB = {
     const rows = await this.queryMany(`
         SELECT * FROM ressource_catalog
         LIMIT ${limit} OFFSET ${page};
-    `)
+    `);
     return rows;
+  },
+};
+
+var DDB = {
+  config: {
+    host: process.env.DDB_HOST,
+    port: process.env.DDB_PORT,
+    user: process.env.DDB_USER,
+    password: process.env.DDB_PASSWORD,
+    authSource: process.env.DDB_AUTH_SOURCE,
+  },
+  getMongoClient: function () {
+    const uri = `mongodb://${this.config.user}:${this.config.password}@${this.config.host}:${this.config.port}?authSource=${this.config.authSource}`;
+    return new MongoClient(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  },
+
+  findPage: async function (
+    collectionName,
+    findQuery,
+    skip,
+    limit,
+    sort = { _id: 1 }
+  ) {
+    let results;
+    const client = this.getMongoClient();
+    try {
+      await client.connect();
+      const database = client.db("garlaxy");
+      const col = await database
+        .collection(collectionName)
+        .find(findQuery)
+        .sort(sort)
+        .skip(skip)
+        .limit(limit);
+      results = await col.toArray();
+    } finally {
+      // Ensures that the client will close when you finish/error
+      await client.close();
+      return results;
+    }
+  },
+
+  getContractorCommentPage: async function (contractor, page, limit) {
+    const skip = (page - 1) * limit;
+    const comments = await this.findPage(
+      "comments",
+      { contractor: contractor },
+      skip,
+      limit,
+      { order_date: -1 }
+    );
+    return comments;
   },
 };
 
 module.exports = {
   RDB,
+  DDB,
 };
