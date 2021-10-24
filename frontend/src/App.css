@@ -119,6 +119,44 @@ body {
   margin-left: 1rem;
 }
 
+.contractors {
+  overflow: hidden;
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.contractors-title {
+  text-align: center;
+}
+
+.contractors-select {
+  width: 50%;
+  background-color: transparent;
+  color: whitesmoke;
+  text-align: center;
+  align-self: center;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  height: 60vh;
+  margin-bottom: 2rem;
+}
+
+.comment {
+  margin: 1rem;
+}
+
+.comment-date {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-self: center;
+}
+
 /* RESPONSIVE PROPERTIES */
 @media screen and (max-width: 768px) {
   /* Just show the horizontal menu element instead of the vertical one */

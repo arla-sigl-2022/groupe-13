@@ -25,6 +25,11 @@ function SideMenuBase(props) {
               Commandes
             </Link>
           </li>
+          <li className="pure-menu-item">
+            <Link className="pure-menu-link" to="/contractors">
+              Contractors
+            </Link>
+          </li>
         </ul>
       </div>
     </div>
