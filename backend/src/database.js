@@ -59,7 +59,7 @@ var DDB = {
     authSource: process.env.DDB_AUTH_SOURCE,
   },
   getMongoClient: function () {
-    const uri = `mongodb://${this.config.user}:${this.config.password}@${this.config.host}:${this.config.port}?authSource=${this.config.authSource}`;
+    const uri = `mongodb://${this.config.user}:${this.config.password}@${this.config.host}:${this.config.port}/?authSource=${this.config.authSource}`;
     return new MongoClient(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
