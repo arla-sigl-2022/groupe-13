@@ -55,11 +55,12 @@ var DDB = {
     host: process.env.DDB_HOST,
     port: process.env.DDB_PORT,
     user: process.env.DDB_USER,
+    database: process.env.DDB_DATABASE,
     password: process.env.DDB_PASSWORD,
     authSource: process.env.DDB_AUTH_SOURCE,
   },
   getMongoClient: function () {
-    const uri = `mongodb://${this.config.user}:${this.config.password}@${this.config.host}:${this.config.port}/?authSource=${this.config.authSource}`;
+    const uri = `mongodb://${this.config.user}:${this.config.password}@${this.config.host}:${this.config.port}/${this.config.database}?authSource=${this.config.authSource}`;
     return new MongoClient(uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
