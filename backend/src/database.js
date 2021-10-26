@@ -12,7 +12,7 @@ var RDB = {
   // We leave default values for now.
   pool: new Pool({
     host: process.env.RDB_HOST,
-    port: +process.env.RDB_PORT, 
+    port: +process.env.RDB_PORT,
     database: process.env.RDB_DATABASE,
     user: process.env.RDB_USER,
     password: process.env.RDB_PASSWORD,
@@ -30,7 +30,7 @@ var RDB = {
   getContractors: async function () {
     const rows = await this.queryMany(`
       SELECT * FROM contractor;
-    `)
+    `);
     return rows;
   },
 
@@ -86,6 +86,8 @@ var DDB = {
         .skip(skip)
         .limit(limit);
       results = await col.toArray();
+    } catch (e) {
+      console.log("Mongo Error: ", e);
     } finally {
       // Ensures that the client will close when you finish/error
       await client.close();
