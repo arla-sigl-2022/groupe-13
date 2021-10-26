@@ -78,7 +78,7 @@ var DDB = {
     const client = this.getMongoClient();
     try {
       await client.connect();
-      const database = client.db("garlaxy");
+      const database = client.db();
       const col = await database
         .collection(collectionName)
         .find(findQuery)
