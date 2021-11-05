@@ -11,9 +11,24 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
+  unit-test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm install
+      - name: Run unit tests
+        working-directory: backend
+        run: npm test
+
   build-ci-frontend:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
+    needs: unit-test-backend
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -45,6 +60,7 @@ jobs:
             docker run -d --name ci-garlaxy --network web --label traefik.enable=true --label traefik.docker.network=web --label traefik.frontend.rule=Host:ci.groupe13.arla-sigl.fr --label traefik.frontend.port=80 docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy:$TAG
   build-ci-backend:
     runs-on: ubuntu-latest
+    needs: unit-test-backend
     steps:
       - uses: actions/checkout@v2
       - name: setup .env with github secrets for database
@@ -80,3 +96,44 @@ jobs:
             docker pull docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy-web-api:${{ github.sha }}
             (docker stop ci-garlaxy-web-api && docker rm ci-garlaxy-web-api) || echo "Nothing to stop"
             docker run -d --name ci-garlaxy-web-api --init --network web --label traefik.enable=true --label traefik.docker.network=web --label traefik.frontend.rule=Host:ci.api.groupe13.arla-sigl.fr --label traefik.frontend.port=3030 docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy-web-api:${{ github.sha }}
+  functional-test:
+    runs-on: ubuntu-latest
+    needs: build-ci-backend
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: setup .env with auth0 secrets
+        working-directory: cucumber
+        run: |
+          cat <<EOF > .env
+            AUTH0_CLIENT_ID=${{ secrets.AUTH0_CLIENT_ID}}
+            AUTH0_CLIENT_SECRET=${{ secrets.AUTH0_CLIENT_SECRET}}
+            AUTH0_TOKEN_URL=${{ secrets.AUTH0_TOKEN_URL}}
+            AUTH0_AUDIENCE=${{ secrets.AUTH0_AUDIENCE}}
+            API_URL=https://ci.api.groupe13.arla-sigl.fr
+          EOF
+      - name: install cucumber dependencies
+        working-directory: cucumber
+        run: npm install
+      - name: Run cucumber test
+        working-directory: cucumber
+        run: npm test
+  
+  e2e-test:
+    runs-on: ubuntu-latest
+    needs: 
+      - build-ci-backend
+      - build-ci-frontend
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - name: install cypress dependencies
+        working-directory: e2e
+        run: npm install
+      - name: Run cypress test
+        working-directory: e2e
+        run: npm run cypress:ci
