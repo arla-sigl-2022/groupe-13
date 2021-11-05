@@ -1,19 +1,17 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CD with docker
+name: CI on pull requests
 
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
-  push:
+  pull_request: 
     branches: [ main ]
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build-frontend:
+  build-ci-frontend:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
@@ -26,9 +24,9 @@ jobs:
       - name: build and publish frontend docker image
         working-directory: frontend
         run: | 
-          docker build -t docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }} .
+          docker build -t docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy:${{ github.sha }} -f Dockerfile.ci .
           docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:${{ github.sha }}
+          docker push docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy:${{ github.sha }}
 
       - name: Deploy on production VM
         uses: appleboy/ssh-action@master
@@ -42,10 +40,10 @@ jobs:
           script: |
             echo "image tag to be release: $TAG"
             docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:$TAG
-            (docker stop garlaxy && docker rm garlaxy) || echo "Nothing to stop"
-            docker run -d --name garlaxy --network web --label traefik.enable=true --label traefik.docker.network=web --label traefik.frontend.rule=Host:groupe13.arla-sigl.fr --label traefik.frontend.port=80 docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy:$TAG
-  build-backend:
+            docker pull docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy:$TAG
+            (docker stop ci-garlaxy && docker rm ci-garlaxy) || echo "Nothing to stop"
+            docker run -d --name ci-garlaxy --network web --label traefik.enable=true --label traefik.docker.network=web --label traefik.frontend.rule=Host:ci.groupe13.arla-sigl.fr --label traefik.frontend.port=80 docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy:$TAG
+  build-ci-backend:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -53,24 +51,24 @@ jobs:
         working-directory: backend
         run: |
           cat <<EOF > .env
-            RDB_HOST=${{ secrets.RDB_HOST }}
-            RDB_PORT=${{ secrets.RDB_PORT }}
-            RDB_DATABASE=${{ secrets.RDB_DATABASE }}
-            RDB_USER=${{ secrets.RDB_USER }}
-            RDB_PASSWORD=${{ secrets.RDB_PASSWORD }}
-            DDB_HOST=${{ secrets.DDB_HOST }}
-            DDB_PORT=${{ secrets.DDB_PORT }}
-            DDB_USER=${{ secrets.DDB_USER }}
-            DDB_DATABASE=${{ secrets.DDB_DATABASE }}
-            DDB_PASSWORD=${{ secrets.DDB_PASSWORD }}
-            DDB_AUTH_SOURCE=${{ secrets.DDB_AUTH_SOURCE }}
+            RDB_HOST=${{ secrets.CI_RDB_HOST }}
+            RDB_PORT=${{ secrets.CI_RDB_PORT }}
+            RDB_DATABASE=${{ secrets.CI_RDB_DATABASE }}
+            RDB_USER=${{ secrets.CI_RDB_USER }}
+            RDB_PASSWORD=${{ secrets.CI_RDB_PASSWORD }}
+            DDB_HOST=${{ secrets.CI_DDB_HOST }}
+            DDB_PORT=${{ secrets.CI_DDB_PORT }}
+            DDB_USER=${{ secrets.CI_DDB_USER }}
+            DDB_DATABASE=${{ secrets.CI_DDB_DATABASE }}
+            DDB_PASSWORD=${{ secrets.CI_DDB_PASSWORD }}
+            DDB_AUTH_SOURCE=${{ secrets.CI_DDB_AUTH_SOURCE }}
           EOF
       - name: build and publish backend docker image
         working-directory: backend
         run: |
-          docker build -t docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy-web-api:${{ github.sha }} .
+          docker build -t docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy-web-api:${{ github.sha }} .
           docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker push docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy-web-api:${{ github.sha }} 
+          docker push docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy-web-api:${{ github.sha }} 
       - name: Deploy on production VM
         uses: appleboy/ssh-action@master
         with:
@@ -79,8 +77,6 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             docker login docker.pkg.github.com -u ${{ secrets.DOCKER_USER }} -p ${{ secrets.DOCKER_PASSWORD }}
-            docker pull docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy-web-api:${{ github.sha }}
-            (docker stop garlaxy-web-api && docker rm garlaxy-web-api) || echo "Nothing to stop"
-            docker run -d --name garlaxy-web-api --init --network web --label traefik.enable=true --label traefik.docker.network=web --label traefik.frontend.rule=Host:api.groupe13.arla-sigl.fr --label traefik.frontend.port=3030 docker.pkg.github.com/arla-sigl-2022/groupe-13/garlaxy-web-api:${{ github.sha }}
-          
-          
+            docker pull docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy-web-api:${{ github.sha }}
+            (docker stop ci-garlaxy-web-api && docker rm ci-garlaxy-web-api) || echo "Nothing to stop"
+            docker run -d --name ci-garlaxy-web-api --init --network web --label traefik.enable=true --label traefik.docker.network=web --label traefik.frontend.rule=Host:ci.api.groupe13.arla-sigl.fr --label traefik.frontend.port=3030 docker.pkg.github.com/arla-sigl-2022/groupe-13/ci-garlaxy-web-api:${{ github.sha }}
