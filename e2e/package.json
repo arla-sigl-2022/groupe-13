@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "cypress:open": "CYPRESS_GARLAXY_URL=http://localhost:3000 cypress open"
+    "cypress:open": "CYPRESS_GARLAXY_URL=http://localhost:3000 cypress open",
+    "cypress:ci": "CYPRESS_GARLAXY_URL=https://ci.groupe13.arla-sigl.fr cypress run"
   },
   "keywords": [],
   "author": "",
