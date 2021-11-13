@@ -5,7 +5,31 @@ const { extractPageOptions } = require("./utils");
 const jwt = require('express-jwt');
 const jwks = require('jwks-rsa');
 const bodyParser = require('body-parser');
+const log4js = require('log4js');
 
+const loggerConfig = {
+  appenders: {
+    stdout: {
+      type: "console",
+      layout: {
+        type: "coloured",
+      },
+    },
+    logstash: {
+      type: "log4js-logstash",
+      host: "localhost",
+      port: 5000,
+    },
+  },
+  categories: {
+    default: {
+      appenders: ['stdout', 'logstash'],
+      level: 'trace'
+    }
+  },
+};
+
+log4js.configure(loggerConfig);
 
 const app = express();
 const port = 3030;
