@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: garlaxy-backend
+spec:
+  selector:
+    matchLabels:
+      app: garlaxy
+      tier: backend
+      track: stable
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: garlaxy
+        tier: backend
+        track: stable
+    spec:
+      containers:
+        - name: garlaxy-backend
+          image: "garlaxy-backend:local"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3030
+...

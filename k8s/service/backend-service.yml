@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: garlaxy-backend-svc 
+spec:
+  selector:
+    app: garlaxy
+    tier: backend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: http
+...

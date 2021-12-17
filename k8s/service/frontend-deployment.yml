@@ -1,0 +1,23 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: garlaxy-frontend
+spec:
+  selector:
+    matchLabels:
+      app: garlaxy
+      tier: frontend
+      track: stable
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: garlaxy
+        tier: frontend
+        track: stable
+    spec:
+      containers:
+        - name: garlaxy-frontend
+          image: "garlaxy-frontend:local"
+...
