@@ -1,5 +1,4 @@
 import React from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import { SideMenu, SideMenuSmallScreen } from "./SideMenu";
 import { Ressources } from "./Ressources";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
@@ -10,14 +9,11 @@ import { Contractors } from "./Contractors";
 
 export function Content() {
   const { dispatch } = React.useContext(GarlaxyContext);
-  const { getAccessTokenSilently } = useAuth0();
 
   React.useEffect(() => {
     async function getResources() {
-      const token = await getAccessTokenSilently();
       const apiResponse = await fetch(
-        `${process.env.REACT_APP_API_HOST}/v1/resource?page=1&limit=10`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${process.env.REACT_APP_API_HOST}/v1/resource?page=1&limit=10`
       );
       const resourcesDocument = await apiResponse.json();
       dispatch({
@@ -26,7 +22,7 @@ export function Content() {
       });
     }
     getResources();
-  }, [dispatch, getAccessTokenSilently]);
+  }, [dispatch]);
 
   return (
     <Router>

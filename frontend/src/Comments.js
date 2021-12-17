@@ -1,5 +1,4 @@
 import React from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import { formatDistance } from "date-fns";
 
 function formatDate(date) {
@@ -26,17 +25,14 @@ function Comment({
 
 export function Comments({ contractor }) {
   const [comments, setComments] = React.useState([]);
-  const { getAccessTokenSilently } = useAuth0();
 
   React.useEffect(() => {
     async function fetchComments() {
-      const token = await getAccessTokenSilently();
 
       const apiResponse = await fetch(
         `${process.env.REACT_APP_API_HOST}/v1/contractor/comment?page=1&limit=5`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
           },
           method: "POST",
