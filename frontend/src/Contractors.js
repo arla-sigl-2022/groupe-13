@@ -1,22 +1,18 @@
 import React from "react";
 import { Comments } from "./Comments";
-import { useAuth0 } from "@auth0/auth0-react";
 
 export function Contractors() {
   const [selectedContractor, setSelection] = React.useState("");
   const [contractors, setContractors] = React.useState([]);
-  
-  const { getAccessTokenSilently } = useAuth0();
+
 
   React.useEffect(() => {
     async function fetchContractors() {
-      const token = await getAccessTokenSilently();
 
       const apiResponse = await fetch(
         `${process.env.REACT_APP_API_HOST}/v1/contractor`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
             "Content-Type": "application/json"
           }
         }
